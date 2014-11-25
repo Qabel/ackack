@@ -11,8 +11,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Actor implements Runnable {
 
     static private Map<Object, Actor> actors = Collections.synchronizedMap(new HashMap<Object, Actor>());
-
     private LinkedBlockingQueue<Event<?>> inQueue = new LinkedBlockingQueue<Event<?>>();
+    private Map<String, Registration<?>> reactors = new HashMap<String, Registration<?>>();
+    private Registration<?> defaultReactor = null;
+    private boolean running;
 
     public Registration<?> getDefaultReactor() {
         return defaultReactor;
@@ -22,14 +24,10 @@ public class Actor implements Runnable {
         this.defaultReactor = defaultReactor;
     }
 
-    private Registration<?> defaultReactor = null;
-
     static class Registration<T> {
         public Class<T> dataClass;
         public Reactor<T> reactor;
     }
-
-    private Map<String, Registration<?>> reactors = new HashMap<String, Registration<?>>();
 
     public boolean isRunning() {
         return running;
@@ -38,8 +36,6 @@ public class Actor implements Runnable {
     public void stop() {
         this.running = false;
     }
-
-    private boolean running;
 
     public <T> boolean send(Object receiver, String event, T data) {
         Event<T> e = new Event<T>();
@@ -70,6 +66,7 @@ public class Actor implements Runnable {
         }
     }
 
+    @Override
     public void run() {
         Registration<?> registration;
         Event<?> e;
@@ -77,8 +74,10 @@ public class Actor implements Runnable {
         try {
             while(isRunning()) {
                 e = inQueue.take();
-                registration = reactors.getOrDefault(e.getName(), defaultReactor);
-                if(registration == null)
+                registration = reactors.get(e.getName());
+                if (registration == null && defaultReactor != null)
+                    registration = defaultReactor;
+                else
                     continue;
                 if(registration.dataClass.isAssignableFrom(e.getData().getClass())) {
                     // TODO Fix Warning
