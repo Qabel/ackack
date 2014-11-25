@@ -11,22 +11,19 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Actor implements Runnable {
 
     static private Map<Object, Actor> actors = Collections.synchronizedMap(new HashMap<Object, Actor>());
-    private LinkedBlockingQueue<Event<?>> inQueue = new LinkedBlockingQueue<Event<?>>();
-    private Map<String, Registration<?>> reactors = new HashMap<String, Registration<?>>();
-    private Registration<?> defaultReactor = null;
+
+    public Object getId() {
+        return id;
+    }
+
+    private final Object id;
+    private LinkedBlockingQueue<Action> inQueue = new LinkedBlockingQueue<Action>();
+    private Map<String, Reactor<?>> reactors = new HashMap<String, Reactor<?>>();
+    private Reactor<?> defaultReactor = null;
     private boolean running;
 
-    public Registration<?> getDefaultReactor() {
+    public Reactor<?> getDefaultReactor() {
         return defaultReactor;
-    }
-
-    public void setDefaultReactor(Registration<?> defaultReactor) {
-        this.defaultReactor = defaultReactor;
-    }
-
-    static class Registration<T> {
-        public Class<T> dataClass;
-        public Reactor<T> reactor;
     }
 
     public boolean isRunning() {
@@ -37,71 +34,61 @@ public class Actor implements Runnable {
         this.running = false;
     }
 
+    public Actor(Object id) {
+        actors.put(id, this);
+        this.id = id;
+    }
     public <T> boolean send(Object receiver, String event, T data) {
-        Event<T> e = new Event<T>();
+        final Event<T> e = new Event<T>();
+        final Actor receiverActor = receiver instanceof Actor ? (Actor) receiver : actors.get(receiver);
         e.setData(data);
+        e.setName(event);
         e.setTime(System.currentTimeMillis());
-        Actor actor = null;
-        if(receiver instanceof Actor) {
-            actor = ((Actor)receiver);
-        }
-        else {
-            actor = actors.get(receiver);
-        }
+        e.setSender(this);
 
-        if(actor == null) {
+        return receiverActor.post(new Action() {
+            public void action() {
+                // runs in context of receiver
+                Reactor reactor = receiverActor.reactors.get(e.getName());
+                if(reactor == null)
+                    reactor = receiverActor.getDefaultReactor();
+                if(reactor != null)
+                    reactor.onEvent(e);
+                // TODO: If no reactor is found, send an errormessage back.
+            }
+        });
+    }
+
+    private boolean post(Action action) {
+        try {
+            inQueue.put(action);
+        } catch (InterruptedException e) {
+            // TODO log error
             return false;
         }
-
-        actor.queue(e.clone());
         return true;
     }
 
-    private void queue(Event<?> e) {
-        try {
-            inQueue.put(e);
-        } catch (InterruptedException e1) {
-            // TODO Log exception
-            e1.printStackTrace();
-        }
-    }
-
-    @Override
     public void run() {
-        Registration<?> registration;
-        Event<?> e;
+        Action action;
+        running = true;
 
         try {
             while(isRunning()) {
-                e = inQueue.take();
-                registration = reactors.get(e.getName());
-                if (registration == null && defaultReactor != null)
-                    registration = defaultReactor;
-                else
-                    continue;
-                if(registration.dataClass.isAssignableFrom(e.getData().getClass())) {
-                    // TODO Fix Warning
-                    registration.reactor.onEvent((Event)e);
-                }
-                // TODO Throw error if wrong datatype is given.
+                action = inQueue.take();
+                if(action != null)
+                    action.action();
             }
         } catch (InterruptedException ex) {
-            // TODO Log exception
             stop();
         }
     }
 
     public <T> void register(String event, Class<T> dataClass, Reactor<T> reactor) {
-        Registration<T> registration = new Registration<T>();
-        registration.dataClass = dataClass;
-        registration.reactor = reactor;
-        reactors.put(event, registration);
+        reactors.put(event, reactor);
     }
 
     public <T> void registerDefault(Class<T> dataClass, Reactor<T> reactor) {
-        Registration<T> registration = new Registration<T>();
-        registration.dataClass = dataClass;
-        registration.reactor = reactor;
-        defaultReactor = registration;
+        defaultReactor = reactor;
     }
 }

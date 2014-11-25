@@ -52,6 +52,7 @@ public class Event<T> implements Cloneable {
         Event<T> event = new Event<T>();
         // TODO Clone Data Object
         event.setData(data);
+        event.setSender(sender);
         event.setTime(time);
         return event;
     }

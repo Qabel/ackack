@@ -3,33 +3,56 @@ package de.qabel.ackack;
 import org.junit.Assert;
 import org.junit.Test;
 
-class TestClass {
-    public String data;
-}
-
 public class ActorTest {
-
-    TestClass tc = new TestClass();
-    TestClass tcc = new TestClass();
-    Actor a = new Actor();
-    Actor b = new Actor();
-    Event e = new Event();
+    Actor actor1 = new Actor("actor1");
+    Actor actor2 = new Actor("actor2");
 
     @Test
     public void isNotRunningTest() {
-        Assert.assertFalse(a.isRunning());
+        Assert.assertFalse(actor1.isRunning());
     }
 
     @Test
-    public void sendTest() {
-        a.register("New Event", TestClass.class, new Reactor<TestClass>() {
-            @Override
-            public void onEvent(Event<TestClass> event) {
-                tc = event.getData();
+    public void sendReceiveTest() {
+        // Register a Reactor which will terminate the actor after its first event.
+        actor1.registerDefault(String.class, new Reactor<String>() {
+            public void onEvent(Event<String> event) {
+                Assert.assertEquals("DATA", event.getData());
+                Assert.assertEquals(actor2, event.getSender());
+                // Stop this actor to terminate endless loop
+                actor1.stop();
             }
         });
-        tcc.data = "foo";
-        Assert.assertTrue(a.send(b, "New Event", tcc));
-        Assert.assertEquals("foo", tcc.data);
+
+        // Send data to actor1 through its id.
+        Assert.assertTrue(actor2.send("actor1", "event", "DATA"));
+
+        // Start the actor to receive
+        actor1.run();
     }
+
+    @Test
+    public void threadedSendReceiveTest() {
+        // Register a Reactor which will terminate the actor after its first event.
+        actor1.registerDefault(String.class, new Reactor<String>() {
+            public void onEvent(Event<String> event) {
+                Assert.assertEquals("DATA", event.getData());
+                Assert.assertEquals(actor2, event.getSender());
+                // Stop this actor to terminate thread
+                actor1.stop();
+            }
+        });
+        Thread actor1Thread = new Thread(actor1);
+        actor1Thread.start();
+
+        // Send data to actor1 through its id.
+        Assert.assertTrue(actor2.send("actor1", "event", "DATA"));
+
+        // Busyloop to wait for background thread to be terminated
+        while(actor1.isRunning()) {
+            Thread.yield();
+        }
+    }
+
+
 }
