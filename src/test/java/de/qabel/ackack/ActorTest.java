@@ -4,54 +4,41 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ActorTest {
-    Actor actor1 = new Actor("actor1");
-    Actor actor2 = new Actor("actor2");
+    Actor actor = new Actor();
 
     @Test
     public void isNotRunningTest() {
-        Assert.assertFalse(actor1.isRunning());
+        Assert.assertFalse(actor.isRunning());
     }
 
     @Test
     public void sendReceiveTest() {
-        // Register a Reactor which will terminate the actor after its first event.
-        actor1.registerDefault(String.class, new Reactor<String>() {
-            public void onEvent(Event<String> event) {
-                Assert.assertEquals("DATA", event.getData());
-                Assert.assertEquals(actor2, event.getSender());
-                // Stop this actor to terminate endless loop
-                actor1.stop();
+        Actor actor = new Actor() {
+            @Override
+            protected void react(MessageInfo info, Object... data) {
+                Assert.assertEquals(data[0], "Hello World");
+                stop();
             }
-        });
-
-        // Send data to actor1 through its id.
-        Assert.assertTrue(actor2.send("actor1", "event", "DATA"));
-
-        // Start the actor to receive
-        actor1.run();
+        };
+        actor.post("Hello World");
+        actor.run();
     }
 
     @Test
-    public void threadedSendReceiveTest() {
-        // Register a Reactor which will terminate the actor after its first event.
-        actor1.registerDefault(String.class, new Reactor<String>() {
-            public void onEvent(Event<String> event) {
-                Assert.assertEquals("DATA", event.getData());
-                Assert.assertEquals(actor2, event.getSender());
-                // Stop this actor to terminate thread
-                actor1.stop();
+    public void threadedSendReceiveTest() throws InterruptedException {
+        final Object result[] = { null };
+        Actor actor = new Actor() {
+            @Override
+            protected void react(MessageInfo info, Object... data) {
+                result[0] = data[0];
+                stop();
             }
-        });
-        Thread actor1Thread = new Thread(actor1);
-        actor1Thread.start();
-
-        // Send data to actor1 through its id.
-        Assert.assertTrue(actor2.send("actor1", "event", "DATA"));
-
-        // Busyloop to wait for background thread to be terminated
-        while(actor1.isRunning()) {
-            Thread.yield();
-        }
+        };
+        Thread bg = new Thread(actor);
+        bg.start();
+        actor.post("Hello World");
+        bg.join();
+        Assert.assertEquals(result[0], "Hello World");
     }
 
 
