@@ -6,3 +6,4 @@ gradle-app.setting
 *.iml
 .floo*
 .idea*
+/bin/
