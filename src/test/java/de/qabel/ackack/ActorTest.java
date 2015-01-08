@@ -43,12 +43,12 @@ public class ActorTest {
 
     @Test
     public void threadedSendReceiveTestMessageInfo() throws InterruptedException {
-    	MessageInfo messageInfo;
-        Actor actor, actor2;
+    	MessageInfo messageInfo2;
+        Actor actor1, actor2;
         final Object result[] = { null };
-        Thread actorThread, actor2Thread;
+        Thread actor1Thread, actor2Thread;
 
-        actor = new Actor() {
+        actor1 = new Actor() {
             @Override
             protected void react(MessageInfo info, Object... data) {
                 result[0] = data[0];
@@ -67,21 +67,18 @@ public class ActorTest {
             }
         };
         
-        messageInfo = new MessageInfo();
-        messageInfo.setSender(actor2);
+        messageInfo2 = new MessageInfo();
+        messageInfo2.setSender(actor2);
         
         actor2Thread = new Thread(actor2);
         actor2Thread.start();
 
-        actorThread = new Thread(actor);
-        actorThread.start();
-        actor.post(messageInfo, "Hello World");
-        actorThread.join();
+        actor1Thread = new Thread(actor1);
+        actor1Thread.start();
+        actor1.post(messageInfo2, "Hello World");
+        actor1Thread.join();
 
         actor2Thread.join();
         Assert.assertEquals(result[0], "Hello World");
     }
-
-
-
 }
