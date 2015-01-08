@@ -33,7 +33,9 @@ public class MessageInfo implements Cloneable {
     }
     
     public void answer(final Object... data) {
-    	this.sender.post(this, data);
+    	if (this.sender != null) {
+            this.sender.post(this, data);
+    	}
     	
     }
 }
