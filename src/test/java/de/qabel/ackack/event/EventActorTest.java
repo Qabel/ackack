@@ -1,7 +1,9 @@
 package de.qabel.ackack.event;
 
+import de.qabel.ackack.Actor;
 import de.qabel.ackack.MessageInfo;
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 /**
@@ -69,6 +71,66 @@ public class EventActorTest {
         emitter.emit("test", testObject);
         bg1.join();
         bg2.join();
+
+        assertEquals(testObject, result[0]);
+        assertEquals(testObject, result[1]);
+    }
+
+    @Test
+    public void sendMultipleThreadedMessageInfo() throws InterruptedException {
+        EventEmitter emitter = new EventEmitter();
+        final EventActor actor1 = new EventActor(emitter);
+        final EventActor actor2 = new EventActor(emitter);
+        Actor actor3;
+    	MessageInfo messageInfo3;
+        final Object[] result = new Object[2];
+        final Object testObject = new Object();
+        Thread actor1Thread, actor2Thread, actor3Thread;
+
+        actor1.on("test", new EventListener() {
+            public void onEvent(String event, MessageInfo info, Object... data) {
+                result[0] = data[0];
+                info.answer("Answer");
+                actor1.stop();
+            }
+        });
+        actor2.on("test", new EventListener() {
+            public void onEvent(String event, MessageInfo info, Object... data) {
+                result[1] = data[0];
+                info.answer("Answer");
+                actor2.stop();
+            }
+        });
+
+        actor3 = new Actor() {
+        	private int counter = 0;
+
+            @Override
+            protected void react(MessageInfo info, Object... data) {
+                assertEquals(data[0], "Answer");
+                
+                this.counter++;
+                if (this.counter == result.length) {
+                	stop();
+                }
+            }
+        };
+
+        messageInfo3 = new MessageInfo();
+        messageInfo3.setSender(actor3);
+        
+        actor3Thread = new Thread(actor3);
+        actor3Thread.start();
+        
+        actor1Thread = new Thread(actor1);
+        actor1Thread.start();
+        actor2Thread = new Thread(actor2);
+        actor2Thread.start();
+
+        emitter.emit("test", messageInfo3, testObject);
+        actor1Thread.join();
+        actor2Thread.join();
+        actor3Thread.join();
 
         assertEquals(testObject, result[0]);
         assertEquals(testObject, result[1]);
