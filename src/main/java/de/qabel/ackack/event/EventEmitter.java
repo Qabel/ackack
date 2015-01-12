@@ -2,6 +2,7 @@ package de.qabel.ackack.event;
 
 import de.qabel.ackack.MessageInfo;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,11 +28,11 @@ public class EventEmitter {
         actorSet.add(actor);
     }
 
-    public int emit(String event, Object... data) {
+    public int emit(String event, Serializable... data) {
         return emit(event, new MessageInfo(), data);
     }
 
-    synchronized public int emit(String event, MessageInfo info, Object... data) {
+    synchronized public int emit(String event, MessageInfo info, Serializable... data) {
         Set<EventActor> actorSet = actors.get(event);
         info.setType("event");
         if(actorSet == null)

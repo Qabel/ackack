@@ -31,7 +31,7 @@ public class EventActorTest {
         final EventActor actor = new EventActor(emitter);
         final Object[] result = { null };
         Thread bg = new Thread(actor);
-        Object testObject = new Object();
+        String testObject = "Test String";
         actor.on("test", new EventListener() {
             public void onEvent(String event, MessageInfo info, Object... data) {
                 result[0] = data[0];
@@ -49,17 +49,17 @@ public class EventActorTest {
         EventEmitter emitter = new EventEmitter();
         final EventActor actor1 = new EventActor(emitter);
         final EventActor actor2 = new EventActor(emitter);
-        final Object[] result = new Object[2];
-        final Object testObject = new Object();
+        final String[] result = new String[2];
+        final String testObject = "Hello World";
         actor1.on("test", new EventListener() {
             public void onEvent(String event, MessageInfo info, Object... data) {
-                result[0] = data[0];
+                result[0] = data[0].toString();
                 actor1.stop();
             }
         });
         actor2.on("test", new EventListener() {
             public void onEvent(String event, MessageInfo info, Object... data) {
-                result[1] = data[0];
+                result[1] = data[0].toString();
                 actor2.stop();
             }
         });
@@ -83,20 +83,20 @@ public class EventActorTest {
         final EventActor actor2 = new EventActor(emitter);
         Actor actor3;
     	MessageInfo messageInfo3;
-        final Object[] result = new Object[2];
-        final Object testObject = new Object();
+        final String[] result = new String[2];
+        final String testObject = "Hello World";
         Thread actor1Thread, actor2Thread, actor3Thread;
 
         actor1.on("test", new EventListener() {
             public void onEvent(String event, MessageInfo info, Object... data) {
-                result[0] = data[0];
+                result[0] = data[0].toString();
                 info.answer("Answer");
                 actor1.stop();
             }
         });
         actor2.on("test", new EventListener() {
             public void onEvent(String event, MessageInfo info, Object... data) {
-                result[1] = data[0];
+                result[1] = data[0].toString();
                 info.answer("Answer");
                 actor2.stop();
             }

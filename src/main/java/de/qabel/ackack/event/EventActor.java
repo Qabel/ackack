@@ -3,6 +3,7 @@ package de.qabel.ackack.event;
 import de.qabel.ackack.Actor;
 import de.qabel.ackack.MessageInfo;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +14,7 @@ import java.util.Set;
 public class EventActor extends Actor {
     private final EventEmitter emitter;
     public HashMap<String, Set<EventListener>> listeners = new HashMap<String, Set<EventListener>>();
-    void receiveEvent(String event, MessageInfo info, Object... data) {
+    void receiveEvent(String event, MessageInfo info, Serializable... data) {
         this.post(info, event, data);
     }
 

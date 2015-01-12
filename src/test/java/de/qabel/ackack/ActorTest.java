@@ -52,7 +52,6 @@ public class ActorTest {
             @Override
             protected void react(MessageInfo info, Object... data) {
                 result[0] = data[0];
-
                 info.answer("Answer");
                 stop();
             }
@@ -61,7 +60,7 @@ public class ActorTest {
         actor2 = new Actor() {
             @Override
             protected void react(MessageInfo info, Object... data) {
-                Assert.assertEquals(data[0], "Answer");
+                Assert.assertEquals(data[0].toString(), "Answer");
                 
                 stop();
             }

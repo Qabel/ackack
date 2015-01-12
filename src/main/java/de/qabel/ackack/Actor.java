@@ -1,7 +1,8 @@
 package de.qabel.ackack;
 
+import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
-
+import org.apache.commons.lang3.SerializationUtils;
 /**
  * Created by tox on 11/24/14.
  */
@@ -18,12 +19,16 @@ public class Actor implements Runnable {
         this.running = false;
     }
 
-    public boolean post(final Object... data) {
+    public boolean post(final Serializable... data) {
         return post(new MessageInfo(), data);
     }
 
-    public boolean post(final MessageInfo info, final Object... data) {
+    public boolean post(final MessageInfo info, final Serializable... data) {
         info.setTime(System.currentTimeMillis());
+        Object[] copies = new Object[data.length];
+        for(int i = 0; i < copies.length; i++) {
+            copies[i] = SerializationUtils.clone(data[i]);
+        }
         return this.runInContext(new Runnable() {
             public void run() {
                 // runs in context of receiver
