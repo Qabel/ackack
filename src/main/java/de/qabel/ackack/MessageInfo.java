@@ -1,5 +1,7 @@
 package de.qabel.ackack;
 
+import java.io.Serializable;
+
 /**
 * Created by tox on 11/25/14.
 */
@@ -32,7 +34,7 @@ public class MessageInfo implements Cloneable {
         this.type = type;
     }
     
-    public void answer(final Object... data) {
+    public void answer(final Serializable... data) {
     	if (this.sender != null) {
             this.sender.post(this, data);
     	}
