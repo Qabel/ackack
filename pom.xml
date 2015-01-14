@@ -20,13 +20,19 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <developer>
       <name>Enno Boland</name>
       <email>boland@praemandatum.de</email>
-      <organization>Praemandatum</organization>
+	  <organization>Praemandatum GmbH</organization>
+      <organizationUrl>http://www.prae.me</organizationUrl>
+    </developer>
+    <developer>
+      <name>Jan Schreiber</name>
+      <email>schreiber@praemandatum.de</email>
+      <organization>Praemandatum GmbH</organization>
       <organizationUrl>http://www.prae.me</organizationUrl>
     </developer>
     <developer>
       <name>Michael Ott</name>
       <email>ott@qabel.de</email>
-      <organization>Qabel</organization>
+      <organization>Qabel GmbH</organization>
       <organizationUrl>http://www.qabel.de</organizationUrl>
     </developer>
   </developers>
