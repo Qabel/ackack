@@ -7,9 +7,14 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * Created by tox on 12/14/14.
+ * Test class for class EventActor
+ *
  */
 public class EventActorTest {
+	
+	/**
+	 * Send an event 
+	 */
     @Test
     public void sendEventTest() {
         final EventActor actor = new EventActor();
@@ -25,6 +30,10 @@ public class EventActorTest {
         assertEquals("Hello", result[0]);
     }
 
+    /**
+     * Send event in a thread
+     * @throws InterruptedException
+     */
     @Test
     public void sendEventTestThreaded() throws InterruptedException {
         EventEmitter emitter = new EventEmitter();
@@ -44,6 +53,10 @@ public class EventActorTest {
         assertEquals(testObject, result[0]);
     }
 
+    /**
+     * Send multiple events in a threaded environment
+     * @throws InterruptedException
+     */
     @Test
     public void sendMultipleThreaded() throws InterruptedException {
         EventEmitter emitter = new EventEmitter();
@@ -76,6 +89,10 @@ public class EventActorTest {
         assertEquals(testObject, result[1]);
     }
 
+    /**
+     * Send multiple events in a threaded environment with an answer to an actor
+     * @throws InterruptedException
+     */
     @Test
     public void sendMultipleThreadedMessageInfo() throws InterruptedException {
         EventEmitter emitter = new EventEmitter();
