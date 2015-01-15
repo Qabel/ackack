@@ -7,3 +7,13 @@ gradle-app.setting
 .floo*
 .idea*
 /bin/
+/target/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# vi
+*~
+*.sw*
