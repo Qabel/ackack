@@ -56,7 +56,7 @@ public class MessageInfo implements Cloneable {
 
     /**
      * Set type of the message
-     * @param type Type of the messsage
+     * @param type Type of the message
      */
     public void setType(String type) {
         this.type = type;
