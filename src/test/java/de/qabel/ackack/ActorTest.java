@@ -4,10 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ActorTest {
-    Actor actor = new Actor();
 
     @Test
     public void isNotRunningTest() {
+        Actor actor = new Actor();
         Assert.assertFalse(actor.isRunning());
     }
 
