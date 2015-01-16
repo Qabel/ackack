@@ -1,28 +1,49 @@
 package de.qabel.ackack;
 
 import java.io.Serializable;
+
 import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.commons.lang3.SerializationUtils;
+
 /**
- * Created by tox on 11/24/14.
+ * Actor which want to send a message
+ *
  */
 public class Actor implements Runnable {
 
     private final LinkedBlockingQueue<Runnable> inQueue = new LinkedBlockingQueue<Runnable>();
     private boolean running;
 
+    /**
+     * Shows whether the "thread" is running in background
+     * @return true when object is running
+     */
     public boolean isRunning() {
         return running;
     }
 
+    /**
+     * Stop the background "thread" 
+     */
     public void stop() {
         this.running = false;
     }
 
+    /**
+     * Post data
+     * @param data Data to send
+     * @return True when data is send
+     */
     public boolean post(final Serializable... data) {
         return post(new MessageInfo(), data);
     }
 
+    /**
+     * Post data
+     * @param info Information of the message
+     * @param data Data to send
+     * @return True when data is send
+     */
     public boolean post(final MessageInfo info, final Serializable... data) {
         info.setTime(System.currentTimeMillis());
         Object[] copies = new Object[data.length];
@@ -37,6 +58,11 @@ public class Actor implements Runnable {
         });
     }
 
+    /**
+     * Function which handle incoming data
+     * @param info Information of the message
+     * @param data Data to send
+     */
     protected void react(final MessageInfo info, final Object... data) {
     }
 
@@ -50,6 +76,9 @@ public class Actor implements Runnable {
         return true;
     }
 
+    /**
+     * Handle the background "thread"
+     */
     public void run() {
         Runnable action;
         running = true;

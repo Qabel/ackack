@@ -9,11 +9,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by tox on 12/6/14.
+ * Event actor which want to send a message
+ *
  */
 public class EventActor extends Actor {
     private final EventEmitter emitter;
+    
+    /**
+     * Map of message ids and its listeners
+     */
     public HashMap<String, Set<EventListener>> listeners = new HashMap<String, Set<EventListener>>();
+    
+    /**
+     * Post receive events
+     * @param event Event id
+     * @param info Information of the message
+     * @param data Data to send
+     */
     void receiveEvent(String event, MessageInfo info, Serializable... data) {
         this.post(info, event, data);
     }
@@ -22,10 +34,19 @@ public class EventActor extends Actor {
         this(EventEmitter.getDefault());
     }
 
+    /**
+     * 
+     * @param emitter Object which shall emit data
+     */
     public EventActor(EventEmitter emitter) {
         this.emitter = emitter;
     }
 
+    /**
+     * Function which handle incoming data
+     * @param info Information of the message
+     * @param data Data to send
+     */
     @Override
     protected void react(MessageInfo info, Object... data) {
         if(!"event".equals(info.getType()))
@@ -39,6 +60,11 @@ public class EventActor extends Actor {
         }
     }
 
+    /**
+     * Add an event listener to an event id
+     * @param event Event id
+     * @param listener Event listener
+     */
     public void on(String event, EventListener listener) {
         Set<EventListener> listenerSet = listeners.get(event);
         if(listenerSet == null) {

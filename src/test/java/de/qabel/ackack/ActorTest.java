@@ -3,14 +3,24 @@ package de.qabel.ackack;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Test class for class Actor
+ *
+ */
 public class ActorTest {
-    Actor actor = new Actor();
 
+    /**
+     * Actor is not running an a "thread"
+     */
     @Test
     public void isNotRunningTest() {
+        Actor actor = new Actor();
         Assert.assertFalse(actor.isRunning());
     }
 
+    /**
+     * Send data and check received message
+     */
     @Test
     public void sendReceiveTest() {
         Actor actor = new Actor() {
@@ -24,6 +34,10 @@ public class ActorTest {
         actor.run();
     }
 
+    /**
+     * Send data and check received message in a "threaded" environment
+     * @throws InterruptedException
+     */
     @Test
     public void threadedSendReceiveTest() throws InterruptedException {
         final Object result[] = { null };
@@ -41,6 +55,11 @@ public class ActorTest {
         Assert.assertEquals(result[0], "Hello World");
     }
 
+    /**
+     * Send data and check received message in a "threaded" environment with an 
+     * answer to an actor
+     * @throws InterruptedException
+     */
     @Test
     public void threadedSendReceiveTestMessageInfo() throws InterruptedException {
     	MessageInfo messageInfo2;
