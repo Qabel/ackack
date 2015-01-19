@@ -6,7 +6,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.commons.lang3.SerializationUtils;
 
 /**
- * Actor which want to send a message
+ * Actor is a Message Passing class which blocks a thread and waits for incoming messages
+ * from other Threads and especially other actors.
  *
  */
 public class Actor implements Runnable {
@@ -39,6 +40,20 @@ public class Actor implements Runnable {
     }
 
     /**
+     * ask a question which can (not must) be answered by an actor.
+     * @param sender the actor which asks the question
+     * @param responsible the anserable object which is called by onResponse
+     * @param data data
+     * @return true if successfully asked, false otherwise
+     */
+    public boolean ask(Actor sender, Responsible responsible, final Serializable... data) {
+        MessageInfo info = new MessageInfo();
+        info.setSender(sender);
+        info.setResponsible(responsible);
+        return post(info, data);
+    }
+
+    /**
      * Post data
      * @param info Information of the message
      * @param data Data to send
@@ -66,7 +81,7 @@ public class Actor implements Runnable {
     protected void react(final MessageInfo info, final Object... data) {
     }
 
-    private boolean runInContext(Runnable action) {
+    public boolean runInContext(Runnable action) {
         try {
             inQueue.put(action);
         } catch (InterruptedException e) {

@@ -9,7 +9,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Event actor which want to send a message
+ * EventActor is an {@link de.qabel.ackack.Actor} which is used as running context for multiple
+ * {@link de.qabel.ackack.event.EventListener}. EventListener can register themselves using the @{link #on}
+ * method.
  *
  */
 public class EventActor extends Actor {

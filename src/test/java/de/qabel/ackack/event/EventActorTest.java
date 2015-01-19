@@ -90,7 +90,7 @@ public class EventActorTest {
     }
 
     /**
-     * Send multiple events in a threaded environment with an answer to an actor
+     * Send multiple events in a threaded environment with an onResponse to an actor
      * @throws InterruptedException
      */
     @Test
@@ -107,14 +107,14 @@ public class EventActorTest {
         actor1.on("test", new EventListener() {
             public void onEvent(String event, MessageInfo info, Object... data) {
                 result[0] = data[0].toString();
-                info.answer("Answer");
+                info.response("Answer");
                 actor1.stop();
             }
         });
         actor2.on("test", new EventListener() {
             public void onEvent(String event, MessageInfo info, Object... data) {
                 result[1] = data[0].toString();
-                info.answer("Answer");
+                info.response("Answer");
                 actor2.stop();
             }
         });

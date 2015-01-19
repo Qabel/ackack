@@ -3,7 +3,7 @@ package de.qabel.ackack;
 import java.io.Serializable;
 
 /**
- * Save information about the message
+ * MessageInfo stores meta data of a Message.
  *
  */
 public class MessageInfo implements Cloneable {
@@ -13,6 +13,7 @@ public class MessageInfo implements Cloneable {
     private Actor sender;
     private long time;
     private String type;
+    private Responsible responsible;
     
     /**
      * Get the sender of the message
@@ -61,15 +62,38 @@ public class MessageInfo implements Cloneable {
     public void setType(String type) {
         this.type = type;
     }
-    
+
     /**
      * Answer to the received message
      * @param data Data to send
      */
-    public void answer(final Serializable... data) {
-    	if (this.sender != null) {
+    public void response(final Serializable... data) {
+    	if (this.sender == null) {
+            return;
+        } else if (getResponsible() != null) {
+            this.sender.runInContext(new Runnable() {
+                public void run() {
+                    MessageInfo.this.getResponsible().onResponse(data);
+                }
+            });
+        } else {
             this.sender.post(this, data);
-    	}
-    	
+        }
+    }
+
+    /**
+     * gets the Answerable
+     * @return the Answerable
+     */
+    public Responsible getResponsible() {
+        return responsible;
+    }
+
+    /**
+     * sets the answerable
+     * @param responsible the answerable to set
+     */
+    public void setResponsible(Responsible responsible) {
+        this.responsible = responsible;
     }
 }
