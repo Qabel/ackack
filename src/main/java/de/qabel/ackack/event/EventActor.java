@@ -20,7 +20,7 @@ public class EventActor extends Actor {
     /**
      * Map of message ids and its listeners
      */
-    public HashMap<String, Set<EventListener>> listeners = new HashMap<String, Set<EventListener>>();
+    protected HashMap<String, Set<EventListener>> listeners = new HashMap<String, Set<EventListener>>();
     
     /**
      * Post receive events
