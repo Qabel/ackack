@@ -61,14 +61,14 @@ public class Actor implements Runnable {
      */
     public boolean post(final MessageInfo info, final Serializable... data) {
         info.setTime(System.currentTimeMillis());
-        Object[] copies = new Object[data.length];
+        final Object[] copies = new Object[data.length];
         for(int i = 0; i < copies.length; i++) {
             copies[i] = SerializationUtils.clone(data[i]);
         }
         return this.runInContext(new Runnable() {
             public void run() {
                 // runs in context of receiver
-                react(info, data);
+                react(info, copies);
             }
         });
     }
