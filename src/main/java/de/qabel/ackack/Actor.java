@@ -11,7 +11,11 @@ import org.apache.commons.lang3.SerializationUtils;
  *
  */
 public class Actor implements Runnable {
-
+    private static final Runnable EMPTY = new Runnable() {
+        @Override
+        public void run() {
+        }
+    };
     private final LinkedBlockingQueue<Runnable> inQueue = new LinkedBlockingQueue<Runnable>();
     private boolean running;
 
@@ -28,6 +32,7 @@ public class Actor implements Runnable {
      */
     public void stop() {
         this.running = false;
+        this.runInContext(EMPTY);
     }
 
     /**
