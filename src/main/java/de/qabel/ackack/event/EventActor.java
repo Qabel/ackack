@@ -57,9 +57,10 @@ public class EventActor extends Actor {
         Object[] eventData = (Object[])data[1];
 
         Set<EventListener> listenerSet = listeners.get(event);
-        for(EventListener listener : listenerSet) {
-            listener.onEvent(event, info, eventData);
-        }
+        if(listenerSet != null)
+            for(EventListener listener : listenerSet) {
+                listener.onEvent(event, info, eventData);
+            }
     }
 
     /**

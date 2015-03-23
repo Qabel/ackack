@@ -31,7 +31,7 @@ public class EventEmitter {
      * @param event Event id
      * @param actor Actor to register
      */
-    synchronized void register(String event, EventActor actor) {
+    public synchronized void register(String event, EventActor actor) {
         Set<EventActor> actorSet = actors.get(event);
         if(actorSet == null) {
             actors.put(event, actorSet = new HashSet<EventActor>());
