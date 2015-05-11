@@ -59,6 +59,37 @@ public class Actor implements Runnable {
     }
 
     /**
+     * asks this Actor for data in a synchronous way and runs the senders eventloop
+     * as long as the data isn't received
+     * @param sender the actor which asks for an answer
+     * @param data data send to this actor
+     * @return the result from this actor
+     */
+    public Serializable[] askSync(Actor sender, final Serializable... data) {
+        final boolean[] localrun = { true };
+        final Serializable[][] result = { null };
+
+        this.ask(sender, new Responsible() {
+            @Override
+            public void onResponse(Serializable... data) {
+                result[0] = data;
+                localrun[0] = false;
+            }
+        }, data);
+
+        try {
+            while(localrun[0] && sender.isRunning()) {
+                Runnable action = sender.inQueue.take();
+                if(action != null)
+                    action.run();
+            }
+        } catch (InterruptedException ex) {
+            sender.stop();
+        }
+        return result[0];
+    }
+
+    /**
      * Post data
      * @param info Information of the message
      * @param data Data to send
