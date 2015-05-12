@@ -16,7 +16,7 @@ public class Actor implements Runnable {
         public void run() {
         }
     };
-    private final LinkedBlockingQueue<Runnable> inQueue = new LinkedBlockingQueue<Runnable>();
+    private final LinkedBlockingQueue<Runnable> inQueue = new LinkedBlockingQueue<>();
     private boolean running;
 
     /**

@@ -20,7 +20,7 @@ public class EventActor extends Actor {
     /**
      * Map of message ids and its listeners
      */
-    protected HashMap<String, Set<EventListener>> listeners = new HashMap<String, Set<EventListener>>();
+    protected HashMap<String, Set<EventListener>> listeners = new HashMap<>();
     
     /**
      * Post receive events
@@ -71,7 +71,7 @@ public class EventActor extends Actor {
     public void on(String event, EventListener listener) {
         Set<EventListener> listenerSet = listeners.get(event);
         if(listenerSet == null) {
-            listeners.put(event, listenerSet = new HashSet<EventListener>());
+            listeners.put(event, listenerSet = new HashSet<>());
         }
         listenerSet.add(listener);
         emitter.register(event, this);

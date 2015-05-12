@@ -24,7 +24,7 @@ public class EventEmitter {
         return defaultEmitter;
     }
 
-    private HashMap<String, Set<EventActor>> actors = new HashMap<String, Set<EventActor>>();
+    private HashMap<String, Set<EventActor>> actors = new HashMap<>();
 
     /**
      * Register an actor to an event id
@@ -34,7 +34,7 @@ public class EventEmitter {
     public synchronized void register(String event, EventActor actor) {
         Set<EventActor> actorSet = actors.get(event);
         if(actorSet == null) {
-            actors.put(event, actorSet = new HashSet<EventActor>());
+            actors.put(event, actorSet = new HashSet<>());
         }
         actorSet.add(actor);
     }
