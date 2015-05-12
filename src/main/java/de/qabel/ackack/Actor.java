@@ -137,8 +137,9 @@ public class Actor implements Runnable {
         try {
             while(isRunning()) {
                 action = inQueue.take();
-                if(action != null)
+                if(action != null) {
                     action.run();
+                }
             }
         } catch (InterruptedException ex) {
             stop();

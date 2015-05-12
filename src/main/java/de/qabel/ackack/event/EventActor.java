@@ -51,16 +51,18 @@ public class EventActor extends Actor {
 	 */
 	@Override
 	protected void react(MessageInfo info, Object... data) {
-		if(!"event".equals(info.getType()))
+		if(!"event".equals(info.getType())) {
 			return;
+		}
 		String event = (String)data[0];
 		Object[] eventData = (Object[])data[1];
 
 		Set<EventListener> listenerSet = listeners.get(event);
-		if(listenerSet != null)
-			for(EventListener listener : listenerSet) {
+		if(listenerSet != null) {
+			for (EventListener listener : listenerSet) {
 				listener.onEvent(event, info, eventData);
 			}
+		}
 	}
 
 	/**
