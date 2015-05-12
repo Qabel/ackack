@@ -22,16 +22,6 @@ public class EventActor extends Actor {
 	 */
 	protected HashMap<String, Set<EventListener>> listeners = new HashMap<>();
 
-	/**
-	 * Post receive events
-	 * @param event Event id
-	 * @param info Information of the message
-	 * @param data Data to send
-	 */
-	void receiveEvent(String event, MessageInfo info, Serializable... data) {
-		this.post(info, event, data);
-	}
-
 	public EventActor() {
 		this(EventEmitter.getDefault());
 	}
@@ -42,6 +32,16 @@ public class EventActor extends Actor {
 	 */
 	public EventActor(EventEmitter emitter) {
 		this.emitter = emitter;
+	}
+
+	/**
+	 * Post receive events
+	 * @param event Event id
+	 * @param info Information of the message
+	 * @param data Data to send
+	 */
+	void receiveEvent(String event, MessageInfo info, Serializable... data) {
+		this.post(info, event, data);
 	}
 
 	/**
