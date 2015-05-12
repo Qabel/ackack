@@ -102,6 +102,7 @@ public class Actor implements Runnable {
             copies[i] = SerializationUtils.clone(data[i]);
         }
         return this.runInContext(new Runnable() {
+            @Override
             public void run() {
                 // runs in context of receiver
                 react(info, copies);
@@ -130,6 +131,7 @@ public class Actor implements Runnable {
     /**
      * Handle the background "thread"
      */
+    @Override
     public void run() {
         Runnable action;
         running = true;
