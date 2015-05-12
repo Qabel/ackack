@@ -47,7 +47,7 @@ public class Actor implements Runnable {
     /**
      * ask a question which can (not must) be answered by an actor.
      * @param sender the actor which asks the question
-     * @param responsible the anserable object which is called by onResponse
+     * @param responsible the Responsible object which is called by onResponse
      * @param data data
      * @return true if successfully asked, false otherwise
      */

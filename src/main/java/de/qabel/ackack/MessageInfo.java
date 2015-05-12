@@ -82,16 +82,16 @@ public class MessageInfo implements Cloneable {
     }
 
     /**
-     * gets the Answerable
-     * @return the Answerable
+     * gets the Responsible
+     * @return the Responsible
      */
     public Responsible getResponsible() {
         return responsible;
     }
 
     /**
-     * sets the answerable
-     * @param responsible the answerable to set
+     * sets the Responsible
+     * @param responsible the Responsible to set
      */
     public void setResponsible(Responsible responsible) {
         this.responsible = responsible;

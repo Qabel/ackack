@@ -3,7 +3,7 @@ package de.qabel.ackack;
 import java.io.Serializable;
 
 /**
- * Answerable is an interface which describes classes, that want to get responses
+ * Responsible is an interface which describes classes, that want to get responses
  * to their requests.
  */
 public interface Responsible {
