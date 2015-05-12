@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by tox on 12/6/14.
- */
 public class EventEmitter {
 
     private static EventEmitter defaultEmitter = null;
