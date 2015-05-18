@@ -16,7 +16,7 @@ public class Actor implements Runnable {
         public void run() {
         }
     };
-    private final LinkedBlockingQueue<Runnable> inQueue = new LinkedBlockingQueue<Runnable>();
+    private final LinkedBlockingQueue<Runnable> inQueue = new LinkedBlockingQueue<>();
     private boolean running;
 
     /**
@@ -47,7 +47,7 @@ public class Actor implements Runnable {
     /**
      * ask a question which can (not must) be answered by an actor.
      * @param sender the actor which asks the question
-     * @param responsible the anserable object which is called by onResponse
+     * @param responsible the Responsible object which is called by onResponse
      * @param data data
      * @return true if successfully asked, false otherwise
      */
@@ -102,6 +102,7 @@ public class Actor implements Runnable {
             copies[i] = SerializationUtils.clone(data[i]);
         }
         return this.runInContext(new Runnable() {
+            @Override
             public void run() {
                 // runs in context of receiver
                 react(info, copies);
@@ -130,6 +131,7 @@ public class Actor implements Runnable {
     /**
      * Handle the background "thread"
      */
+    @Override
     public void run() {
         Runnable action;
         running = true;
@@ -137,8 +139,9 @@ public class Actor implements Runnable {
         try {
             while(isRunning()) {
                 action = inQueue.take();
-                if(action != null)
+                if(action != null) {
                     action.run();
+                }
             }
         } catch (InterruptedException ex) {
             stop();

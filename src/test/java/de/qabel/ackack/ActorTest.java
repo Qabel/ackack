@@ -64,7 +64,7 @@ public class ActorTest {
      */
     @Test
     public void threadedSendReceiveTestMessageInfo() throws InterruptedException {
-    	MessageInfo messageInfo2;
+        MessageInfo messageInfo2;
         Actor actor1, actor2;
         final Object result[] = { null };
         Thread actor1Thread, actor2Thread;
@@ -82,14 +82,14 @@ public class ActorTest {
             @Override
             protected void react(MessageInfo info, Object... data) {
                 Assert.assertEquals(data[0].toString(), "Answer");
-                
+
                 stop();
             }
         };
-        
+
         messageInfo2 = new MessageInfo();
         messageInfo2.setSender(actor2);
-        
+
         actor2Thread = new Thread(actor2);
         actor2Thread.start();
 

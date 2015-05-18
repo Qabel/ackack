@@ -7,14 +7,14 @@ import java.io.Serializable;
  *
  */
 public class MessageInfo implements Cloneable {
-	/**
-	 * Sender of the message
-	 */
+    /**
+     * Sender of the message
+     */
     private Actor sender;
     private long time;
     private String type;
     private Responsible responsible;
-    
+
     /**
      * Get the sender of the message
      * @return Sender of the message or null if not set
@@ -68,7 +68,7 @@ public class MessageInfo implements Cloneable {
      * @param data Data to send
      */
     public void response(final Serializable... data) {
-    	if (this.sender == null) {
+        if (this.sender == null) {
             return;
         } else if (getResponsible() != null) {
             this.sender.runInContext(new Runnable() {
@@ -82,16 +82,16 @@ public class MessageInfo implements Cloneable {
     }
 
     /**
-     * gets the Answerable
-     * @return the Answerable
+     * gets the Responsible
+     * @return the Responsible
      */
     public Responsible getResponsible() {
         return responsible;
     }
 
     /**
-     * sets the answerable
-     * @param responsible the answerable to set
+     * sets the Responsible
+     * @param responsible the Responsible to set
      */
     public void setResponsible(Responsible responsible) {
         this.responsible = responsible;
