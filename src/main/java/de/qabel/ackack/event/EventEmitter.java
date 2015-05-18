@@ -36,6 +36,20 @@ public class EventEmitter {
 		}
 		actorSet.add(actor);
 	}
+	
+	/**
+	 * Unregister an actor from an event id
+	 * @param event Event id
+	 * @param actor Actor to unregister
+	 * @return True if actor has been unregistered
+	 */
+	public synchronized boolean unregister(String event, EventActor actor) {
+		Set<EventActor> actorSet = actors.get(event);
+		if(actorSet == null) {
+			return false;
+		}
+		return actorSet.remove(actor);
+	}
 
 	/**
 	 * Emit event
